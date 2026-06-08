@@ -1,5 +1,5 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
-<div class="container mt-3" id="small-group-search" x-data="smallGroupSearch()" x-cloak>
+<div class="container mt-3 sgs-search" id="small-group-search" x-data="smallGroupSearch()" x-cloak>
 
   <form class="row gy-2 gx-3 align-items-center">
 

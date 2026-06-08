@@ -53,3 +53,41 @@
   min-width: 1.5rem;
   text-align: center;
 }
+
+/* Bootstrap utility replacements — scoped to avoid bleeding into the page theme */
+.sgs-search .row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sgs-search .col-auto {
+  margin-right: 1rem;
+}
+
+.sgs-search .mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.sgs-search .mr-sm-2 {
+  margin-right: 0.5rem;
+}
+
+.sgs-search .form-check label {
+  font-size: 1rem;
+}
+
+.sgs-search input[type=search] {
+  padding-left: 0.5rem;
+  background-color: white;
+}
+
+.sgs-search select {
+  color: #12181d;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 3px;
+  line-height: 32px;
+  min-height: 32px;
+}
