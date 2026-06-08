@@ -1,0 +1,45 @@
+<?php
+
+class SGS_Shortcode {
+
+    // Pin to a specific minor version for production stability; bump intentionally when upgrading.
+    const ALPINE_CDN = 'https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js';
+
+    public function __construct() {
+        add_shortcode( 'small-group-search-v2', [ $this, 'render' ] );
+        add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ] );
+        add_filter( 'script_loader_tag', [ $this, 'add_alpine_defer' ], 10, 2 );
+    }
+
+    public function register_assets(): void {
+        wp_register_script( 'sgs-alpine',    self::ALPINE_CDN,                         [],  null,        true );
+        wp_register_script( 'sgs-frontend',  SGS_URL . 'assets/small-groups.js',       [],  SGS_VERSION, true );
+        wp_register_style(  'sgs-frontend',  SGS_URL . 'assets/small-groups.css',      [],  SGS_VERSION       );
+    }
+
+    /** Alpine must be loaded with defer so it initialises after the component function is defined. */
+    public function add_alpine_defer( string $tag, string $handle ): string {
+        if ( $handle === 'sgs-alpine' && strpos( $tag, 'defer' ) === false ) {
+            return str_replace( '<script ', '<script defer ', $tag );
+        }
+        return $tag;
+    }
+
+    public function render( $atts ): string {
+        $groups = SGS_Snapshot_CPT::get_active_groups();
+
+        if ( empty( $groups ) ) {
+            return '<p>No groups are currently available. Please check back soon.</p>';
+        }
+
+        // sgs-frontend must be enqueued before localize_script is called.
+        wp_enqueue_script( 'sgs-frontend' );
+        wp_localize_script( 'sgs-frontend', 'sgsData', [ 'groups' => $groups ] );
+        wp_enqueue_script( 'sgs-alpine' );
+        wp_enqueue_style(  'sgs-frontend' );
+
+        ob_start();
+        include SGS_DIR . 'templates/search.php';
+        return ob_get_clean();
+    }
+}

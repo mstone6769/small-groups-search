@@ -1,0 +1,44 @@
+.sgs-admin .sgs-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    padding: 1.5rem 2rem;
+    margin-top: 1.5rem;
+    max-width: 960px;
+}
+
+.sgs-admin .sgs-card h2 {
+    margin-top: 0;
+}
+
+.sgs-admin .sgs-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.sgs-admin .sgs-actions form {
+    margin: 0;
+}
+
+.sgs-admin .sgs-ok {
+    color: #46b450;
+    font-weight: 600;
+}
+
+.sgs-admin .sgs-warn {
+    color: #dba617;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sgs-admin .sgs-active {
+    color: #46b450;
+    font-weight: 600;
+}
+
+.sgs-admin .sgs-warning-list {
+    margin: 0.5rem 0 0 1.25rem;
+    font-size: 0.875rem;
+    color: #856404;
+}
