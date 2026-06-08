@@ -103,6 +103,20 @@ class CsvParserTest extends TestCase {
         $this->assertSame(['bible study', 'prayer'], $g['filterType']);
     }
 
+    public function test_parse_rejects_non_http_form_link(): void {
+        $path   = $this->make_csv([$this->headers(), array_values($this->row(['Form Link' => 'javascript:alert(1)']))]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+        $this->assertSame('', $groups[0]['formLink']);
+    }
+
+    public function test_parse_allows_https_form_link(): void {
+        $path   = $this->make_csv([$this->headers(), array_values($this->row(['Form Link' => 'https://example.com/join']))]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+        $this->assertSame('https://example.com/join', $groups[0]['formLink']);
+    }
+
     public function test_parse_lowercases_email(): void {
         $path   = $this->make_csv([$this->headers(), array_values($this->row(['Display Email' => 'LEADER@CHURCH.ORG']))]);
         $groups = SGS_CSV_Parser::parse($path);

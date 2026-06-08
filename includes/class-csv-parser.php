@@ -105,6 +105,8 @@ class SGS_CSV_Parser {
             $group['filterDays']        = SGS_CSV_Validator::split_and_trim( $group['filterDays']        ?? null );
             $group['filterType']        = SGS_CSV_Validator::split_and_trim( $group['filterType']        ?? null );
             $group['email']             = strtolower( $group['email'] ?? '' );
+            $url                        = $group['formLink'] ?? '';
+            $group['formLink']          = preg_match( '/^https?:\/\//i', $url ) ? $url : '';
 
             $groups[] = $group;
         }
