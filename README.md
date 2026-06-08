@@ -5,7 +5,7 @@ A WordPress plugin that provides a CSV-driven small group search experience. Adm
 ## Features
 
 - **Admin CSV upload** — import a groups spreadsheet and optionally activate it immediately
-- **Snapshot history** — every upload is stored; activate any previous snapshot or delete old ones
+- **Snapshot history** — every upload is stored with its original filename; activate, download, or delete any previous snapshot
 - **Schema validation** — warns on missing or renamed columns without blocking the import
 - **`[small-group-search-v2]` shortcode** — Alpine.js 3.x powered UI with filter dropdowns and keyword search
 - **Safe rollback** — the active snapshot stays live until you explicitly activate a new one
@@ -29,6 +29,7 @@ A WordPress plugin that provides a CSV-driven small group search experience. Adm
 2. Go to **WP Admin → Small Groups → Upload CSV**
 3. Choose the file and check **Activate immediately** to make it live right away, or leave it unchecked to review warnings first
 4. Use the **Activate** button in the Snapshot History table to switch the live data to any snapshot
+5. Use the **Download CSV** button to export the stored data from any snapshot back to a CSV file
 
 ### Shortcode
 
