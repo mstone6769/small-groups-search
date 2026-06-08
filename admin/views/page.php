@@ -43,6 +43,7 @@
       <thead>
         <tr>
           <th>Uploaded</th>
+          <th>File</th>
           <th>Groups</th>
           <th>Schema Warnings</th>
           <th>Status</th>
@@ -53,6 +54,7 @@
         <?php foreach ( $snapshots as $snap ) : ?>
         <tr>
           <td><?php echo esc_html( $snap['date'] ); ?></td>
+          <td><?php echo $snap['filename'] ? esc_html( $snap['filename'] ) : '&mdash;'; ?></td>
           <td><?php echo esc_html( $snap['count'] ); ?></td>
           <td>
             <?php if ( empty( $snap['warnings'] ) ) : ?>
@@ -76,6 +78,12 @@
             <?php endif; ?>
           </td>
           <td class="sgs-actions">
+            <?php
+            $download_url = wp_nonce_url(
+                add_query_arg( [ 'action' => 'sgs_download', 'snapshot_id' => $snap['id'] ], admin_url( 'admin-post.php' ) ),
+                'sgs_download_' . $snap['id']
+            );
+            ?>
             <?php if ( ! $snap['active'] ) : ?>
             <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
               <input type="hidden" name="action" value="sgs_activate">
@@ -98,6 +106,7 @@
               <button type="submit" class="button button-link-delete">Go Offline</button>
             </form>
             <?php endif; ?>
+            <a href="<?php echo esc_url( $download_url ); ?>" class="button">Download CSV</a>
           </td>
         </tr>
         <?php endforeach; ?>

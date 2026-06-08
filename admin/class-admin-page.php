@@ -11,6 +11,7 @@ class SGS_Admin_Page {
         add_action( 'admin_post_sgs_activate',   [ $this, 'handle_activate' ] );
         add_action( 'admin_post_sgs_deactivate', [ $this, 'handle_deactivate' ] );
         add_action( 'admin_post_sgs_delete',     [ $this, 'handle_delete' ] );
+        add_action( 'admin_post_sgs_download',   [ $this, 'handle_download' ] );
     }
 
     public function add_menu(): void {
@@ -54,7 +55,7 @@ class SGS_Admin_Page {
         $headers  = SGS_CSV_Parser::get_headers( $tmp );
         $warnings = SGS_CSV_Validator::validate( $headers );
         $groups   = SGS_CSV_Parser::parse( $tmp );
-        $snap_id  = SGS_Snapshot_CPT::save( $groups, $warnings );
+        $snap_id  = SGS_Snapshot_CPT::save( $groups, $warnings, $file['name'] );
 
         if ( is_wp_error( $snap_id ) ) {
             $this->redirect( 'Failed to save snapshot: ' . $snap_id->get_error_message(), 'error' );
@@ -97,6 +98,53 @@ class SGS_Admin_Page {
             $this->redirect( 'Cannot delete the active snapshot. Activate a different snapshot first.', 'error' );
         }
         $this->redirect( 'Snapshot deleted.', 'success' );
+    }
+
+    public function handle_download(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized' );
+        $id = (int) ( $_GET['snapshot_id'] ?? 0 );
+        check_admin_referer( 'sgs_download_' . $id );
+
+        $groups   = get_post_meta( $id, '_sgs_groups',   true );
+        $filename = (string) get_post_meta( $id, '_sgs_filename', true );
+
+        if ( ! is_array( $groups ) ) wp_die( 'Snapshot not found.' );
+
+        if ( ! $filename ) {
+            $filename = 'snapshot-' . $id . '.csv';
+        }
+
+        header( 'Content-Type: text/csv; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+        header( 'Pragma: no-cache' );
+
+        $out = fopen( 'php://output', 'w' );
+        fputcsv( $out, [ 'Group Name', 'Leaders', 'Email', 'Phone', 'Target', 'Description',
+                         'Location', 'Meeting Days', 'Filter Days', 'Demographic', 'Category',
+                         'Group Type', 'Childcare', 'Online/Zoom', 'Form Link' ] );
+
+        foreach ( $groups as $group ) {
+            fputcsv( $out, [
+                $group['name']              ?? '',
+                $group['leaders']           ?? '',
+                $group['email']             ?? '',
+                $group['phone']             ?? '',
+                $group['target']            ?? '',
+                $group['description']       ?? '',
+                $group['location']          ?? '',
+                $group['meetsOn']           ?? '',
+                implode( ', ', (array) ( $group['filterDays']        ?? [] ) ),
+                implode( ', ', (array) ( $group['filterDemographic'] ?? [] ) ),
+                implode( ', ', (array) ( $group['filterCategory']    ?? [] ) ),
+                implode( ', ', (array) ( $group['filterType']        ?? [] ) ),
+                $group['childcareAvailable'] ?? '',
+                $group['online']             ?? '',
+                $group['formLink']           ?? '',
+            ] );
+        }
+
+        fclose( $out );
+        exit;
     }
 
     private function redirect( string $notice, string $type ): void {

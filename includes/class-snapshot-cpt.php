@@ -22,7 +22,7 @@ class SGS_Snapshot_CPT {
     }
 
     /** Save a new snapshot and return its post ID (or WP_Error on failure). */
-    public static function save( array $groups, array $warnings = [] ): int|\WP_Error {
+    public static function save( array $groups, array $warnings = [], string $filename = '' ): int|\WP_Error {
         $id = wp_insert_post( [
             'post_type'   => self::POST_TYPE,
             'post_title'  => current_time( 'Y-m-d H:i:s' ),
@@ -31,9 +31,10 @@ class SGS_Snapshot_CPT {
 
         if ( is_wp_error( $id ) ) return $id;
 
-        update_post_meta( $id, '_sgs_groups', $groups );
+        update_post_meta( $id, '_sgs_groups',   $groups );
         update_post_meta( $id, '_sgs_count',    count( $groups ) );
         update_post_meta( $id, '_sgs_warnings', $warnings );
+        update_post_meta( $id, '_sgs_filename', $filename );
 
         return $id;
     }
@@ -69,8 +70,9 @@ class SGS_Snapshot_CPT {
         return array_map( fn( $p ) => [
             'id'       => $p->ID,
             'date'     => $p->post_title,
-            'count'    => (int)   get_post_meta( $p->ID, '_sgs_count',    true ),
-            'warnings' => (array) get_post_meta( $p->ID, '_sgs_warnings', true ),
+            'filename' => (string) get_post_meta( $p->ID, '_sgs_filename', true ),
+            'count'    => (int)    get_post_meta( $p->ID, '_sgs_count',    true ),
+            'warnings' => (array)  get_post_meta( $p->ID, '_sgs_warnings', true ),
             'active'   => $p->ID === $active_id,
         ], $posts );
     }
