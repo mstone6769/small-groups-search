@@ -20,6 +20,13 @@ function smallGroupSearch() {
   });
 
   return {
+    init() {
+      Promise.resolve().then(function() {
+        var el = document.getElementById('sgs-prerender');
+        if (el) el.remove();
+      });
+    },
+
     groups:            raw,
     dayOptions:        DAY_OPTIONS,
     demographicOptions: [...demoSet],

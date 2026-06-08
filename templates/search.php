@@ -78,7 +78,7 @@
   min-height: 32px;
 }
 </style>
-<div class="container mt-3 sgs-search" id="small-group-search" x-data="smallGroupSearch()" x-cloak>
+<div class="container mt-3 sgs-search" id="small-group-search" x-data="smallGroupSearch()">
 
   <form class="row gy-2 gx-3 align-items-center">
 
@@ -140,11 +140,11 @@
 
   </form>
 
-  <div x-show="isSearching && filteredList.length > 0">
+  <div x-cloak x-show="isSearching && filteredList.length > 0">
     <small x-text="filteredList.length + ' groups match your search'"></small>
   </div>
 
-  <div x-show="isSearching && filteredList.length === 0">
+  <div x-cloak x-show="isSearching && filteredList.length === 0">
     <p>Sorry, no groups match your search.</p>
   </div>
 
@@ -180,5 +180,61 @@
       <a class="button" :href="group.formLink" @click.prevent="groupClick(group.name, group.formLink)">Join Group</a>
     </div>
   </template>
+
+<?php
+// Pre-render the initial (sorted, unfiltered) groups as static HTML so content is
+// visible immediately — no layout shift waiting for Alpine to initialize.
+// The x-init above removes this element after Alpine's first render pass.
+$prerender_groups = $groups;
+usort( $prerender_groups, fn( $a, $b ) => strcmp( $a['name'] ?? '', $b['name'] ?? '' ) );
+?>
+<div id="sgs-prerender">
+<?php foreach ( $prerender_groups as $group ) :
+    $name        = esc_html( $group['name']        ?? '' );
+    $target      = esc_html( $group['target']      ?? '' );
+    $description = esc_html( $group['description'] ?? '' );
+    $leaders     = esc_html( $group['leaders']     ?? '' );
+    $location    = esc_html( $group['location']    ?? '' );
+    $meets_on    = esc_html( $group['meetsOn']     ?? '' );
+    $form_link   = esc_url(  $group['formLink']    ?? '' );
+    $raw_email   = $group['email'] ?? '';
+    $email_href  = $raw_email ? 'mailto:' . esc_attr( $raw_email ) : '';
+    $raw_phone   = $group['phone'] ?? '';
+    $phone_href  = $raw_phone ? 'tel:+1' . preg_replace( '/\D/', '', $raw_phone ) : '';
+    $childcare   = ( $group['childcareAvailable'] ?? '' ) === 'Yes';
+    $online      = ( $group['online']             ?? '' ) === 'Yes';
+?>
+  <div class="life-group">
+    <hr>
+    <div class="group-heading">
+      <h2 class="group-name">
+        <a href="<?= $form_link ?>"><?= $name ?></a>
+      </h2>
+      <p class="group-target"><?= $target ?></p>
+    </div>
+    <p class="group-description"><?= $description ?></p>
+    <p>
+      <span class="sr-only">Leaders:</span>
+      <i class="fa fa-address-card-o"></i>
+      <?= $leaders ?><?php if ( $email_href ) : ?> | <a href="<?= $email_href ?>">Email</a><?php endif; ?><?php if ( $phone_href ) : ?> | <a href="<?= $phone_href ?>">Phone</a><?php endif; ?>
+    </p>
+    <p>
+      <span class="sr-only">Location:</span>
+      <i class="fa fa-map-marker"></i>
+      <?= $location ?>
+    </p>
+    <p>
+      <span class="sr-only">Meets on:</span>
+      <i class="fa fa-calendar"></i>
+      <?= $meets_on ?>
+    </p>
+    <p>
+      <?php if ( $childcare ) : ?><span class="badge rounded-pill bg-dark">Childcare Available</span><?php endif; ?>
+      <?php if ( $online ) : ?><span class="badge rounded-pill bg-dark">Online Zoom Group</span><?php endif; ?>
+    </p>
+    <a class="button" href="<?= $form_link ?>">Join Group</a>
+  </div>
+<?php endforeach; ?>
+</div>
 
 </div>

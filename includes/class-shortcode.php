@@ -12,8 +12,7 @@ class SGS_Shortcode {
     }
 
     public function register_assets(): void {
-        wp_register_script( 'sgs-alpine',    self::ALPINE_CDN,                   [], null,        true );
-        wp_register_script( 'sgs-frontend',  SGS_URL . 'assets/small-groups.js', [], SGS_VERSION, true );
+        wp_register_script( 'sgs-alpine', self::ALPINE_CDN, [], null, true );
     }
 
     /** Alpine must be loaded with defer so it initialises after the component function is defined. */
@@ -31,13 +30,13 @@ class SGS_Shortcode {
             return '<p>No groups are currently available. Please check back soon.</p>';
         }
 
-        wp_enqueue_script( 'sgs-frontend' );
         wp_enqueue_script( 'sgs-alpine' );
 
         $json = json_encode( [ 'groups' => $groups ], JSON_HEX_TAG | JSON_UNESCAPED_UNICODE );
+        $js   = file_get_contents( SGS_DIR . 'assets/small-groups.js' );
 
         ob_start();
-        echo '<script>window.sgsData = ' . $json . ';</script>';
+        echo '<script>window.sgsData = ' . $json . ';' . $js . '</script>';
         include SGS_DIR . 'templates/search.php';
         return ob_get_clean();
     }
