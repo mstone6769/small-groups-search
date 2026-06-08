@@ -62,6 +62,27 @@ These columns may appear under either the short or long form name:
 | `Target \| Gray Text` | `Target \| Gray Text (WHO SHOULD SIGN UP)` |
 | `Type Filter` | `Group Type (WHAT HAPPENS IN GROUP)` |
 
+## Testing
+
+[PHPUnit](https://phpunit.de) + [Brain Monkey](https://brain-wp.github.io/BrainMonkey/) (WordPress function stubs). No database or WordPress install required.
+
+```bash
+# First time: install dependencies
+composer install
+
+# Run the suite
+composer test
+```
+
+Tests live in `tests/`. The suite covers `SGS_CSV_Validator`, `SGS_CSV_Parser`, and `SGS_Snapshot_CPT`.
+
+If you don't have PHP/Composer locally, run via the Docker container:
+
+```bash
+docker compose exec wordpress bash -c \
+  "cd /var/www/html/wp-content/plugins/small-groups-search && vendor/bin/phpunit"
+```
+
 ## Local development
 
 Docker is required. The compose file starts a WordPress + MySQL environment matching the production PHP version.

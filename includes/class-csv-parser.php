@@ -48,16 +48,16 @@ class SGS_CSV_Parser {
     ];
 
     public static function get_headers( string $file_path ): array {
+        if ( ! is_readable( $file_path ) ) return [];
         $handle = fopen( $file_path, 'r' );
-        if ( $handle === false ) return [];
-        $row = fgetcsv( $handle );
+        $row    = fgetcsv( $handle );
         fclose( $handle );
         return $row ?: [];
     }
 
     public static function parse( string $file_path ): array {
+        if ( ! is_readable( $file_path ) ) return [];
         $handle = fopen( $file_path, 'r' );
-        if ( $handle === false ) return [];
 
         $headers = fgetcsv( $handle );
         if ( ! $headers ) {
@@ -91,7 +91,8 @@ class SGS_CSV_Parser {
             foreach ( $picked as $csv_col ) {
                 $out_key = $key_map[ $csv_col ] ?? null;
                 if ( $out_key === null ) continue;
-                $val = $row[ $csv_col ] ?? null;
+                if ( ! array_key_exists( $csv_col, $row ) ) continue;
+                $val = $row[ $csv_col ];
                 if ( is_string( $val ) ) {
                     $val = str_replace( [ "\r\n", "\r", "\n" ], '', $val );
                 }
