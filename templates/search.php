@@ -197,8 +197,6 @@ usort( $prerender_groups, fn( $a, $b ) => strcmp( $a['name'] ?? '', $b['name'] ?
     $location    = esc_html( $group['location']    ?? '' );
     $meets_on    = esc_html( $group['meetsOn']     ?? '' );
     $form_link   = esc_url(  $group['formLink']    ?? '' );
-    $raw_email   = $group['email'] ?? '';
-    $email_href  = $raw_email ? 'mailto:' . esc_attr( $raw_email ) : '';
     $raw_phone   = $group['phone'] ?? '';
     $phone_href  = $raw_phone ? 'tel:+1' . preg_replace( '/\D/', '', $raw_phone ) : '';
     $childcare   = ( $group['childcareAvailable'] ?? '' ) === 'Yes';
@@ -216,7 +214,7 @@ usort( $prerender_groups, fn( $a, $b ) => strcmp( $a['name'] ?? '', $b['name'] ?
     <p>
       <span class="sr-only">Leaders:</span>
       <i class="fa fa-address-card-o"></i>
-      <?= $leaders ?><?php if ( $email_href ) : ?> | <a href="<?= $email_href ?>">Email</a><?php endif; ?><?php if ( $phone_href ) : ?> | <a href="<?= $phone_href ?>">Phone</a><?php endif; ?>
+      <?= $leaders ?><?php if ( $phone_href ) : ?> | <a href="<?= $phone_href ?>">Phone</a><?php endif; ?>
     </p>
     <p>
       <span class="sr-only">Location:</span>
