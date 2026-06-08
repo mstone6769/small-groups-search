@@ -3,7 +3,7 @@
  * Plugin Name: Small Groups Search
 
  * Description: Small group search shortcode with CSV upload and snapshot history.
- * Version:     2.0.0
+ * Version:     2.1.0
  * Author:      Morgan Stone
  * License:     GPL-2.0-or-later
  * Text Domain: small-groups-search
@@ -11,7 +11,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SGS_VERSION', '2.0.0' );
+define( 'SGS_VERSION', '2.1.0' );
 define( 'SGS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SGS_URL', plugin_dir_url( __FILE__ ) );
 
