@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Small Groups Search
- * Plugin URI:  https://www.kingwoodchurch.com
+
  * Description: Small group search shortcode with CSV upload and snapshot history.
  * Version:     2.0.0
  * Author:      Morgan Stone
