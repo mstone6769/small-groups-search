@@ -169,6 +169,34 @@ class CsvParserTest extends TestCase {
         $this->assertSame([], SGS_CSV_Parser::parse('/does/not/exist.csv'));
     }
 
+    // ── parse() — edge cases ─────────────────────────────────────────────────
+
+    public function test_parse_allows_http_form_link(): void {
+        $path   = $this->make_csv([$this->headers(), array_values($this->row(['Form Link' => 'http://example.com/join']))]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+        $this->assertSame('http://example.com/join', $groups[0]['formLink']);
+    }
+
+    public function test_parse_skips_rows_with_wrong_column_count(): void {
+        $path   = tempnam(sys_get_temp_dir(), 'sgs_test_');
+        $handle = fopen($path, 'w');
+        fputcsv($handle, $this->headers());
+        fputcsv($handle, array_slice(array_values($this->row()), 0, -1)); // one column short
+        fclose($handle);
+
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+        $this->assertCount(0, $groups);
+    }
+
+    public function test_parse_returns_empty_for_header_only_file(): void {
+        $path   = $this->make_csv([$this->headers()]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+        $this->assertSame([], $groups);
+    }
+
     // ── parse() — alias override ──────────────────────────────────────────────
 
     public function test_long_form_alias_overwrites_short_form(): void {
@@ -185,5 +213,39 @@ class CsvParserTest extends TestCase {
 
         $this->assertSame(['seniors'], $groups[0]['filterDemographic']);
         $this->assertSame(['women'], $groups[0]['filterCategory']);
+    }
+
+    public function test_long_form_target_alias_used_when_short_form_absent(): void {
+        $headers = array_values(array_diff($this->headers(), ['Target | Gray Text']));
+        $headers[] = 'Target | Gray Text (WHO SHOULD SIGN UP)';
+
+        $row_data = $this->row();
+        unset($row_data['Target | Gray Text']);
+        $row_data['Target | Gray Text (WHO SHOULD SIGN UP)'] = 'young families';
+        $row_values = array_map(fn($h) => $row_data[$h] ?? '', $headers);
+
+        $path   = $this->make_csv([$headers, $row_values]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+
+        $this->assertCount(1, $groups);
+        $this->assertSame('young families', $groups[0]['target']);
+    }
+
+    public function test_long_form_type_alias_used_when_short_form_absent(): void {
+        $headers = array_values(array_diff($this->headers(), ['Type Filter']));
+        $headers[] = 'Group Type (WHAT HAPPENS IN GROUP)';
+
+        $row_data = $this->row();
+        unset($row_data['Type Filter']);
+        $row_data['Group Type (WHAT HAPPENS IN GROUP)'] = 'prayer';
+        $row_values = array_map(fn($h) => $row_data[$h] ?? '', $headers);
+
+        $path   = $this->make_csv([$headers, $row_values]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+
+        $this->assertCount(1, $groups);
+        $this->assertSame(['prayer'], $groups[0]['filterType']);
     }
 }
