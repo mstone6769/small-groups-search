@@ -31,7 +31,7 @@ class SGS_Snapshot_CPT {
 
         if ( is_wp_error( $id ) ) return $id;
 
-        update_post_meta( $id, '_sgs_groups',   wp_json_encode( $groups ) );
+        update_post_meta( $id, '_sgs_groups', $groups );
         update_post_meta( $id, '_sgs_count',    count( $groups ) );
         update_post_meta( $id, '_sgs_warnings', $warnings );
 
@@ -47,8 +47,8 @@ class SGS_Snapshot_CPT {
     public static function get_active_groups(): array {
         $id   = (int) get_option( self::ACTIVE_OPT, 0 );
         if ( ! $id ) return [];
-        $json = get_post_meta( $id, '_sgs_groups', true );
-        return json_decode( $json, true ) ?? [];
+        $groups = get_post_meta( $id, '_sgs_groups', true );
+        return is_array( $groups ) ? $groups : [];
     }
 
     /** Return metadata for all snapshots, newest first. */
@@ -70,9 +70,10 @@ class SGS_Snapshot_CPT {
         ], $posts );
     }
 
-    /** Permanently delete a snapshot. Refuses to delete the active one. */
-    public static function delete( int $id ): void {
-        if ( $id === (int) get_option( self::ACTIVE_OPT, 0 ) ) return;
+    /** Permanently delete a snapshot. Returns false and does nothing if the snapshot is active. */
+    public static function delete( int $id ): bool {
+        if ( $id === (int) get_option( self::ACTIVE_OPT, 0 ) ) return false;
         wp_delete_post( $id, true );
+        return true;
     }
 }

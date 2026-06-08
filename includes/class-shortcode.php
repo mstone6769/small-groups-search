@@ -32,13 +32,14 @@ class SGS_Shortcode {
             return '<p>No groups are currently available. Please check back soon.</p>';
         }
 
-        // sgs-frontend must be enqueued before localize_script is called.
         wp_enqueue_script( 'sgs-frontend' );
-        wp_localize_script( 'sgs-frontend', 'sgsData', [ 'groups' => $groups ] );
         wp_enqueue_script( 'sgs-alpine' );
         wp_enqueue_style(  'sgs-frontend' );
 
+        $json = json_encode( [ 'groups' => $groups ], JSON_HEX_TAG | JSON_UNESCAPED_UNICODE );
+
         ob_start();
+        echo '<script>window.sgsData = ' . $json . ';</script>';
         include SGS_DIR . 'templates/search.php';
         return ob_get_clean();
     }

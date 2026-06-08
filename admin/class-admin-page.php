@@ -85,7 +85,9 @@ class SGS_Admin_Page {
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized' );
         check_admin_referer( 'sgs_delete' );
         $id = (int) ( $_POST['snapshot_id'] ?? 0 );
-        if ( $id ) SGS_Snapshot_CPT::delete( $id );
+        if ( $id && ! SGS_Snapshot_CPT::delete( $id ) ) {
+            $this->redirect( 'Cannot delete the active snapshot. Activate a different snapshot first.', 'error' );
+        }
         $this->redirect( 'Snapshot deleted.', 'success' );
     }
 
