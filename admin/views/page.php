@@ -91,7 +91,12 @@
               <button type="submit" class="button button-link-delete">Delete</button>
             </form>
             <?php else : ?>
-              <em>—</em>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+                  onsubmit="return confirm('This will take the search page offline until another snapshot is activated. Continue?')">
+              <input type="hidden" name="action" value="sgs_deactivate">
+              <?php wp_nonce_field( 'sgs_deactivate' ); ?>
+              <button type="submit" class="button button-link-delete">Go Offline</button>
+            </form>
             <?php endif; ?>
           </td>
         </tr>

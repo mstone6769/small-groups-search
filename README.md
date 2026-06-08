@@ -95,6 +95,20 @@ WordPress will be available at `http://localhost:8080`. Complete the five-minute
 
 The plugin directory is bind-mounted into the container, so file changes take effect immediately without restarting.
 
+## Packaging
+
+To build a WordPress-ready zip for manual upload:
+
+```bash
+bash bin/package.sh
+```
+
+This creates `small-groups-search-<version>.zip` in the repo root. The zip contains only production files — no `vendor/`, `tests/`, `bin/`, dotfiles, or dev config. Upload it via **WP Admin → Plugins → Add New → Upload Plugin**.
+
+### Taking groups offline
+
+Between semesters (or any time you want to hide the search page), go to **WP Admin → Small Groups**, find the active snapshot in the history table, and click **Go Offline**. The shortcode will show an offline message until you activate another snapshot.
+
 ## License
 
 GPL-2.0-or-later

@@ -43,6 +43,11 @@ class SGS_Snapshot_CPT {
         update_option( self::ACTIVE_OPT, $id );
     }
 
+    /** Clear the active snapshot so the shortcode shows the offline message. */
+    public static function deactivate(): void {
+        delete_option( self::ACTIVE_OPT );
+    }
+
     /** Return the groups array from the currently active snapshot. */
     public static function get_active_groups(): array {
         $id   = (int) get_option( self::ACTIVE_OPT, 0 );

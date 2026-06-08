@@ -7,9 +7,10 @@ class SGS_Admin_Page {
     public function __construct() {
         add_action( 'admin_menu',            [ $this, 'add_menu' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
-        add_action( 'admin_post_sgs_upload',   [ $this, 'handle_upload' ] );
-        add_action( 'admin_post_sgs_activate', [ $this, 'handle_activate' ] );
-        add_action( 'admin_post_sgs_delete',   [ $this, 'handle_delete' ] );
+        add_action( 'admin_post_sgs_upload',     [ $this, 'handle_upload' ] );
+        add_action( 'admin_post_sgs_activate',   [ $this, 'handle_activate' ] );
+        add_action( 'admin_post_sgs_deactivate', [ $this, 'handle_deactivate' ] );
+        add_action( 'admin_post_sgs_delete',     [ $this, 'handle_delete' ] );
     }
 
     public function add_menu(): void {
@@ -79,6 +80,13 @@ class SGS_Admin_Page {
         $id = (int) ( $_POST['snapshot_id'] ?? 0 );
         if ( $id ) SGS_Snapshot_CPT::activate( $id );
         $this->redirect( 'Snapshot activated.', 'success' );
+    }
+
+    public function handle_deactivate(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Unauthorized' );
+        check_admin_referer( 'sgs_deactivate' );
+        SGS_Snapshot_CPT::deactivate();
+        $this->redirect( 'Groups are now offline. No snapshot is active.', 'success' );
     }
 
     public function handle_delete(): void {

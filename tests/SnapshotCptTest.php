@@ -68,4 +68,14 @@ class SnapshotCptTest extends TestCase {
         SGS_Snapshot_CPT::activate(13);
         $this->addToAssertionCount(1);
     }
+
+    // ── deactivate() ─────────────────────────────────────────────────────────
+
+    public function test_deactivate_deletes_the_active_option(): void {
+        Functions\expect('delete_option')
+            ->once()
+            ->with(SGS_Snapshot_CPT::ACTIVE_OPT);
+        SGS_Snapshot_CPT::deactivate();
+        $this->addToAssertionCount(1);
+    }
 }
