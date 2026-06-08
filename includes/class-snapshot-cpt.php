@@ -48,7 +48,7 @@ class SGS_Snapshot_CPT {
         $id   = (int) get_option( self::ACTIVE_OPT, 0 );
         if ( ! $id ) return [];
         $json = get_post_meta( $id, '_sgs_groups', true );
-        return $json ? json_decode( $json, true ) : [];
+        return json_decode( $json, true ) ?? [];
     }
 
     /** Return metadata for all snapshots, newest first. */
