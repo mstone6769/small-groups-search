@@ -23,6 +23,9 @@ zip -r "$OUTFILE" "$PLUGIN_SLUG" \
   -x "${PLUGIN_SLUG}/phpunit.xml.dist"   \
   -x "${PLUGIN_SLUG}/docker-compose.yml" \
   -x "${PLUGIN_SLUG}/bin/*"              \
+  -x "${PLUGIN_SLUG}/CLAUDE.md"          \
+  -x "${PLUGIN_SLUG}/html-output*.html"  \
+  -x "${PLUGIN_SLUG}/missing-css/*"      \
   -x "*.zip"
 
 echo "Created: $OUTFILE"

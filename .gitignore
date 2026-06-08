@@ -1,3 +1,5 @@
+html-output*.html
+missing-css/
 .DS_Store
 .env
 *.env
