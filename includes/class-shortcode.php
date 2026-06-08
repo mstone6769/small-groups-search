@@ -12,9 +12,8 @@ class SGS_Shortcode {
     }
 
     public function register_assets(): void {
-        wp_register_script( 'sgs-alpine',    self::ALPINE_CDN,                         [],  null,        true );
-        wp_register_script( 'sgs-frontend',  SGS_URL . 'assets/small-groups.js',       [],  SGS_VERSION, true );
-        wp_register_style(  'sgs-frontend',  SGS_URL . 'assets/small-groups.css',      [],  SGS_VERSION       );
+        wp_register_script( 'sgs-alpine',    self::ALPINE_CDN,                   [], null,        true );
+        wp_register_script( 'sgs-frontend',  SGS_URL . 'assets/small-groups.js', [], SGS_VERSION, true );
     }
 
     /** Alpine must be loaded with defer so it initialises after the component function is defined. */
@@ -34,7 +33,6 @@ class SGS_Shortcode {
 
         wp_enqueue_script( 'sgs-frontend' );
         wp_enqueue_script( 'sgs-alpine' );
-        wp_enqueue_style(  'sgs-frontend' );
 
         $json = json_encode( [ 'groups' => $groups ], JSON_HEX_TAG | JSON_UNESCAPED_UNICODE );
 

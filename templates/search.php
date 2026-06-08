@@ -1,4 +1,83 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
+<style>
+[x-cloak] { display: none !important; }
+
+.group-heading {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.group-heading .group-target {
+  font-family: Montserrat, sans-serif;
+  color: #666;
+  font-weight: 400;
+  margin-bottom: 0;
+  font-size: 1.25rem;
+}
+.group-name {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.life-group p { margin-bottom: 0; }
+.life-group .group-description {
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+.life-group .badge {
+  font-family: Montserrat, sans-serif;
+  background-color: #666;
+  display: inline-block;
+  padding: 0.35em 1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 50rem;
+}
+.life-group .button {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+.life-group .fa {
+  min-width: 1.5rem;
+  text-align: center;
+}
+.sgs-search .row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sgs-search .col-auto {
+  margin-right: 1rem;
+}
+.sgs-search .mb-2 {
+  margin-bottom: 0.5rem;
+}
+.sgs-search .mr-sm-2 {
+  margin-right: 0.5rem;
+}
+.sgs-search .form-check label {
+  font-size: 1rem;
+}
+.sgs-search input[type=search] {
+  padding-left: 0.5rem;
+  background-color: white;
+}
+.sgs-search select {
+  color: #12181d;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 3px;
+  line-height: 32px;
+  min-height: 32px;
+}
+</style>
 <div class="container mt-3 sgs-search" id="small-group-search" x-data="smallGroupSearch()" x-cloak>
 
   <form class="row gy-2 gx-3 align-items-center">
