@@ -64,8 +64,7 @@ Some CSV columns appear under a short name or a verbose long name (e.g. `Demogra
 
 ## Constraints
 
-- No church-specific references in source, comments, commit messages, or documentation
-- No Dreamhost references
+- No church-specific or hosting-provider-specific references in source, comments, commit messages, or documentation — keep all language generic
 - PHP 8.1+ minimum; use typed properties and union return types freely
 - WordPress coding standards for hooks and sanitization; no raw SQL
 - Tests must pass before any commit (`vendor/bin/phpunit` — 34 tests, all green)
