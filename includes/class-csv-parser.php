@@ -2,7 +2,7 @@
 
 class SGS_CSV_Parser {
 
-    // Order matters: later duplicate output keys (long-form column names) override earlier ones.
+    // Order matters: later duplicate output keys override earlier ones.
     private static array $picked_fields = [
         'LifeGroup Name',
         'Name',
@@ -23,6 +23,19 @@ class SGS_CSV_Parser {
         'Group Type (WHAT HAPPENS IN GROUP)',
         "Childcare\nCheckbox",
         'Online/Zoom Checkbox',
+        'Group Name',
+        'Leaders',
+        'Email',
+        'Phone',
+        'Target',
+        'Location',
+        'Demographic',
+        'Group Type',
+        'Childcare',
+        'Online/Zoom',
+        'Demographic (WHAT IS THE AGE LIFEGROUP DESIGNED FOR)',
+        'Category (HOW IS THE GROUP STRUCTURED RELATIONALLY)',
+        'Target  (WHO IS THIS GROUP FOR?)',
     ];
 
     private static array $key_map = [
@@ -45,6 +58,19 @@ class SGS_CSV_Parser {
         'Category (WHO GATHERS TOGETHER)'         => 'filterCategory',
         'Target | Gray Text (WHO SHOULD SIGN UP)' => 'target',
         'Group Type (WHAT HAPPENS IN GROUP)'      => 'filterType',
+        'Group Name'                                      => 'name',
+        'Leaders'                                         => 'leaders',
+        'Email'                                           => 'email',
+        'Phone'                                           => 'phone',
+        'Target'                                          => 'target',
+        'Location'                                        => 'location',
+        'Demographic'                                     => 'filterDemographic',
+        'Group Type'                                      => 'filterType',
+        'Childcare'                                       => 'childcareAvailable',
+        'Online/Zoom'                                     => 'online',
+        'Demographic (WHAT IS THE AGE LIFEGROUP DESIGNED FOR)' => 'filterDemographic',
+        'Category (HOW IS THE GROUP STRUCTURED RELATIONALLY)'  => 'filterCategory',
+        'Target  (WHO IS THIS GROUP FOR?)'                => 'target',
     ];
 
     public static function get_headers( string $file_path ): array {
@@ -79,12 +105,12 @@ class SGS_CSV_Parser {
     private static function map_groups( array $rows ): array {
         $picked  = self::$picked_fields;
         $key_map = self::$key_map;
-        $first   = $picked[0]; // LifeGroup Name
-        $second  = $picked[1]; // Name
 
         $groups = [];
         foreach ( $rows as $row ) {
-            if ( empty( $row[ $first ] ) || empty( $row[ $second ] ) ) continue;
+            $has_name    = ! empty( $row['LifeGroup Name'] ) || ! empty( $row['Group Name'] );
+            $has_leaders = ! empty( $row['Name'] ) || ! empty( $row['Leaders'] );
+            if ( ! $has_name || ! $has_leaders ) continue;
             if ( isset( $row['Hidden'] ) && $row['Hidden'] === 'Yes' ) continue;
 
             $group = [];

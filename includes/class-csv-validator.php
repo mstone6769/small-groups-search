@@ -3,27 +3,25 @@
 class SGS_CSV_Validator {
 
     private static array $required_columns = [
-        'LifeGroup Name',
-        'Name',
-        'Display Email',
-        'Display Phone',
         'Description',
         'Meeting Days',
-        'Location of LifeGroup',
         'Form Link',
         'Filter Days',
-        "Childcare\nCheckbox",
-        'Online/Zoom Checkbox',
-        'Hidden',
     ];
 
-    // The sheet has used both short-form and long-form names for these columns.
-    // At least one from each pair must be present.
+    // At least one variant from each group must be present.
     private static array $aliased_column_groups = [
-        ['Demographic Filter', 'Demographic (HOW OLD ARE THE PEOPLE?)'],
-        ['Category', 'Category (WHO GATHERS TOGETHER)'],
-        ['Target | Gray Text', 'Target | Gray Text (WHO SHOULD SIGN UP)'],
-        ['Type Filter', 'Group Type (WHAT HAPPENS IN GROUP)'],
+        ['LifeGroup Name', 'Group Name'],
+        ['Name', 'Leaders'],
+        ['Display Email', 'Email'],
+        ['Display Phone', 'Phone'],
+        ['Location of LifeGroup', 'Location'],
+        ["Childcare\nCheckbox", 'Childcare'],
+        ['Online/Zoom Checkbox', 'Online/Zoom'],
+        ['Demographic Filter', 'Demographic', 'Demographic (HOW OLD ARE THE PEOPLE?)', 'Demographic (WHAT IS THE AGE LIFEGROUP DESIGNED FOR)'],
+        ['Category', 'Category (WHO GATHERS TOGETHER)', 'Category (HOW IS THE GROUP STRUCTURED RELATIONALLY)'],
+        ['Target | Gray Text', 'Target', 'Target | Gray Text (WHO SHOULD SIGN UP)', 'Target  (WHO IS THIS GROUP FOR?)'],
+        ['Type Filter', 'Group Type', 'Group Type (WHAT HAPPENS IN GROUP)'],
     ];
 
     public static function validate( array $headers ): array {

@@ -197,6 +197,83 @@ class CsvParserTest extends TestCase {
         $this->assertSame([], $groups);
     }
 
+    // ── parse() — new-format column names ────────────────────────────────────
+
+    /** Headers matching the renamed export format (e.g. Fall 2026). */
+    private function new_format_headers(): array {
+        return [
+            'Group Name', 'Leaders', 'Email', 'Phone', 'Target',
+            'Description', 'Location', 'Meeting Days', 'Filter Days',
+            'Demographic', 'Category', 'Group Type', 'Childcare', 'Online/Zoom', 'Form Link',
+        ];
+    }
+
+    /** Data row aligned to new_format_headers(). */
+    private function new_format_row( array $overrides = [] ): array {
+        $defaults = [
+            'Group Name'  => 'Test Group',
+            'Leaders'     => 'Jane Smith',
+            'Email'       => 'Jane@Example.COM',
+            'Phone'       => '555-123-4567',
+            'Target'      => 'everyone',
+            'Description' => 'A group for testing.',
+            'Location'    => 'Room 101',
+            'Meeting Days' => 'Sundays at 10am',
+            'Filter Days' => 'Sunday',
+            'Demographic' => 'adults',
+            'Category'    => 'co-ed',
+            'Group Type'  => 'bible study',
+            'Childcare'   => 'No',
+            'Online/Zoom' => 'No',
+            'Form Link'   => 'https://example.com/join',
+        ];
+        return array_merge($defaults, $overrides);
+    }
+
+    public function test_parse_maps_new_format_headers(): void {
+        $path   = $this->make_csv([$this->new_format_headers(), array_values($this->new_format_row())]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+
+        $this->assertCount(1, $groups);
+        $g = $groups[0];
+        $this->assertSame('Test Group',           $g['name']);
+        $this->assertSame('Jane Smith',           $g['leaders']);
+        $this->assertSame('jane@example.com',     $g['email']);
+        $this->assertSame('555-123-4567',         $g['phone']);
+        $this->assertSame('everyone',             $g['target']);
+        $this->assertSame('A group for testing.', $g['description']);
+        $this->assertSame('Room 101',             $g['location']);
+        $this->assertSame('Sundays at 10am',      $g['meetsOn']);
+        $this->assertSame(['adults'],             $g['filterDemographic']);
+        $this->assertSame(['co-ed'],              $g['filterCategory']);
+        $this->assertSame(['bible study'],        $g['filterType']);
+        $this->assertSame(['Sunday'],             $g['filterDays']);
+        $this->assertSame('No',                   $g['childcareAvailable']);
+        $this->assertSame('No',                   $g['online']);
+        $this->assertSame('https://example.com/join', $g['formLink']);
+    }
+
+    public function test_parse_skips_new_format_rows_missing_group_name(): void {
+        $path = $this->make_csv([
+            $this->new_format_headers(),
+            array_values($this->new_format_row(['Group Name' => ''])),
+        ]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+        $this->assertCount(0, $groups);
+    }
+
+    public function test_parse_skips_new_format_rows_missing_leaders(): void {
+        $path = $this->make_csv([
+            $this->new_format_headers(),
+            array_values($this->new_format_row(['Leaders' => ''])),
+        ]);
+        $groups = SGS_CSV_Parser::parse($path);
+        unlink($path);
+        $this->assertCount(0, $groups);
+    }
+
     // ── parse() — alias override ──────────────────────────────────────────────
 
     public function test_long_form_alias_overwrites_short_form(): void {

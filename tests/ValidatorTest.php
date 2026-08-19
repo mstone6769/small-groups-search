@@ -25,12 +25,11 @@ class ValidatorTest extends TestCase {
     }
 
     public function test_warns_on_multiple_missing_required_columns(): void {
-        $headers = array_values(array_diff(self::$full_headers, ['Description', 'Form Link', 'Hidden']));
+        $headers = array_values(array_diff(self::$full_headers, ['Description', 'Form Link']));
         $warnings = SGS_CSV_Validator::validate($headers);
         $this->assertCount(1, $warnings);
         $this->assertStringContainsString('"Description"', $warnings[0]);
         $this->assertStringContainsString('"Form Link"', $warnings[0]);
-        $this->assertStringContainsString('"Hidden"', $warnings[0]);
     }
 
     public function test_accepts_long_form_demographic_alias(): void {
@@ -67,6 +66,70 @@ class ValidatorTest extends TestCase {
     public function test_no_warning_when_both_alias_variants_present(): void {
         $headers   = self::$full_headers;
         $headers[] = 'Demographic (HOW OLD ARE THE PEOPLE?)';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_no_warnings_with_new_format_headers(): void {
+        $headers = [
+            'Group Name', 'Leaders', 'Email', 'Phone', 'Target',
+            'Description', 'Location', 'Meeting Days', 'Filter Days',
+            'Demographic', 'Category', 'Group Type', 'Childcare', 'Online/Zoom', 'Form Link',
+        ];
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_new_format_group_name_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['LifeGroup Name']));
+        $headers[] = 'Group Name';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_new_format_leaders_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['Name']));
+        $headers[] = 'Leaders';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_new_format_email_and_phone_aliases(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['Display Email', 'Display Phone']));
+        $headers[] = 'Email';
+        $headers[] = 'Phone';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_new_format_childcare_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ["Childcare\nCheckbox"]));
+        $headers[] = 'Childcare';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_new_format_online_zoom_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['Online/Zoom Checkbox']));
+        $headers[] = 'Online/Zoom';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_new_format_location_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['Location of LifeGroup']));
+        $headers[] = 'Location';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_short_demographic_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['Demographic Filter']));
+        $headers[] = 'Demographic';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_short_target_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['Target | Gray Text']));
+        $headers[] = 'Target';
+        $this->assertEmpty(SGS_CSV_Validator::validate($headers));
+    }
+
+    public function test_accepts_short_group_type_alias(): void {
+        $headers = array_values(array_diff(self::$full_headers, ['Type Filter']));
+        $headers[] = 'Group Type';
         $this->assertEmpty(SGS_CSV_Validator::validate($headers));
     }
 

@@ -10,7 +10,7 @@ function smallGroupSearch() {
   const DAY_OPTIONS = ['Any day', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   const demoSet     = new Set(['All age groups', 'young adults | 18-35', 'adults', 'anyone | all ages']);
-  const categorySet = new Set(['All categories', 'co-ed', 'family + parenting', 'men', 'women', 'spanish/español']);
+  const categorySet = new Set(['All categories', 'co-ed', 'men', 'women']);
   const typeSet     = new Set();
 
   raw.forEach(g => {
