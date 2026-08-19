@@ -26,6 +26,7 @@ zip -r "$OUTFILE" "$PLUGIN_SLUG" \
   -x "${PLUGIN_SLUG}/CLAUDE.md"          \
   -x "${PLUGIN_SLUG}/html-output*.html"  \
   -x "${PLUGIN_SLUG}/missing-css/*"      \
+  -x "${PLUGIN_SLUG}/*.csv"             \
   -x "*.zip"
 
 echo "Created: $OUTFILE"
