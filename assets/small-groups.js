@@ -7,11 +7,12 @@ function smallGroupSearch() {
       phone: g.phone ? 'tel:+1' + g.phone.replace(/\D/g, '') : '',
     }));
 
-  const DAY_OPTIONS = ['Any day', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const DAY_OPTIONS = ['Day', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-  const demoSet     = new Set(['All age groups', 'young adults | 18-35', 'adults', 'anyone | all ages']);
-  const categorySet = new Set(['All categories', 'co-ed', 'men', 'women']);
+  const demoSet     = new Set(['Age group', 'young adults | 18-35', 'adults', 'anyone | all ages']);
+  const categorySet = new Set(['Gender', 'co-ed', 'men', 'women']);
   const typeSet     = new Set();
+  const SPANISH_RE  = /espa[nñ]ol/i;
 
   raw.forEach(g => {
     g.filterDemographic.forEach(v => demoSet.add(v));
@@ -31,15 +32,16 @@ function smallGroupSearch() {
     dayOptions:        DAY_OPTIONS,
     demographicOptions: [...demoSet],
     categoryOptions:   [...categorySet],
-    typeOptions:       ['All types', ...[...typeSet].sort((a, b) => a.localeCompare(b))],
+    typeOptions:       ['Group type', ...[...typeSet].sort((a, b) => a.localeCompare(b))],
 
     search:            '',
     filterDays:        DAY_OPTIONS[0],
-    filterDemographic: 'All age groups',
-    filterCategory:    'All categories',
-    filterType:        'All types',
+    filterDemographic: 'Age group',
+    filterCategory:    'Gender',
+    filterType:        'Group type',
     childcare:         false,
     online:            false,
+    espanol:           false,
 
     get isSearching() {
       return this.search !== ''
@@ -48,7 +50,8 @@ function smallGroupSearch() {
         || this.filterCategory    !== this.categoryOptions[0]
         || this.filterType        !== this.typeOptions[0]
         || this.childcare
-        || this.online;
+        || this.online
+        || this.espanol;
     },
 
     get filteredList() {
@@ -56,6 +59,7 @@ function smallGroupSearch() {
       return this.groups.filter(g => {
         if (this.childcare && g.childcareAvailable !== 'Yes')                                                              return false;
         if (this.online    && g.online             !== 'Yes')                                                              return false;
+        if (this.espanol   && !g.filterCategory.some(v => SPANISH_RE.test(v)))                                             return false;
         if (this.filterDays        !== this.dayOptions[0]         && !g.filterDays.includes(this.filterDays))              return false;
         if (this.filterDemographic !== this.demographicOptions[0] && !g.filterDemographic.includes(this.filterDemographic)) return false;
         if (this.filterCategory    !== this.categoryOptions[0]    && !g.filterCategory.includes(this.filterCategory))      return false;

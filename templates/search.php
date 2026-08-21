@@ -88,7 +88,6 @@
 
     <div class="col-auto">
       <select class="form-control mb-2" x-model="filterDays" @change="onSelectChange('Meets on', $event.target.value)">
-        <option disabled value="">Meets on...</option>
         <template x-for="day in dayOptions" :key="day">
           <option :value="day" x-text="day"></option>
         </template>
@@ -97,7 +96,6 @@
 
     <div class="col-auto">
       <select class="form-control mb-2" x-model="filterDemographic" @change="onSelectChange('Demographic', $event.target.value)">
-        <option disabled value="">Demographic...</option>
         <template x-for="demo in demographicOptions" :key="demo">
           <option :value="demo" x-text="demo"></option>
         </template>
@@ -106,7 +104,6 @@
 
     <div class="col-auto">
       <select class="form-control mb-2" x-model="filterType" @change="onSelectChange('Group Type', $event.target.value)">
-        <option disabled value="">Type...</option>
         <template x-for="type in typeOptions" :key="type">
           <option :value="type" x-text="type"></option>
         </template>
@@ -115,7 +112,6 @@
 
     <div class="col-auto">
       <select class="form-control mb-2 mr-sm-2" x-model="filterCategory" @change="onSelectChange('Category', $event.target.value)" style="min-width: 187.5px">
-        <option disabled value="">Category...</option>
         <template x-for="cat in categoryOptions" :key="cat">
           <option :value="cat" x-text="cat"></option>
         </template>
@@ -135,6 +131,14 @@
         <input class="form-check-input" type="checkbox" x-model="online" id="onlineCheck"
                @change="onCheckboxChange('Online Zoom Group', online ? 'Yes' : 'No')">
         <label class="form-check-label" for="onlineCheck"> Online Zoom Group</label>
+      </div>
+    </div>
+
+    <div class="col-auto">
+      <div class="form-check mb-2 mr-sm-2">
+        <input class="form-check-input" type="checkbox" x-model="espanol" id="espanolCheck"
+               @change="onCheckboxChange('Español', espanol ? 'Yes' : 'No')">
+        <label class="form-check-label" for="espanolCheck"> Español</label>
       </div>
     </div>
 
