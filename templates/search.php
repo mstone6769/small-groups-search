@@ -103,17 +103,17 @@
     </div>
 
     <div class="col-auto">
-      <select class="form-control mb-2" x-model="filterType" @change="onSelectChange('Group Type', $event.target.value)">
-        <template x-for="type in typeOptions" :key="type">
-          <option :value="type" x-text="type"></option>
+      <select class="form-control mb-2 mr-sm-2" x-model="filterCategory" @change="onSelectChange('Category', $event.target.value)" style="min-width: 187.5px">
+        <template x-for="cat in categoryOptions" :key="cat">
+          <option :value="cat" x-text="cat"></option>
         </template>
       </select>
     </div>
 
     <div class="col-auto">
-      <select class="form-control mb-2 mr-sm-2" x-model="filterCategory" @change="onSelectChange('Category', $event.target.value)" style="min-width: 187.5px">
-        <template x-for="cat in categoryOptions" :key="cat">
-          <option :value="cat" x-text="cat"></option>
+      <select class="form-control mb-2" x-model="filterType" @change="onSelectChange('Group Type', $event.target.value)">
+        <template x-for="type in typeOptions" :key="type">
+          <option :value="type" x-text="type"></option>
         </template>
       </select>
     </div>
