@@ -83,7 +83,11 @@
   <form class="row gy-2 gx-3 align-items-center">
 
     <div class="col-auto">
-      <input type="search" x-model.trim="search" placeholder="Search" aria-label="Search" class="form-control mb-2 mr-sm-2">
+      <select class="form-control mb-2" x-model="filterType" @change="onSelectChange('Group Type', $event.target.value)">
+        <template x-for="type in typeOptions" :key="type">
+          <option :value="type" x-text="type"></option>
+        </template>
+      </select>
     </div>
 
     <div class="col-auto">
@@ -111,11 +115,7 @@
     </div>
 
     <div class="col-auto">
-      <select class="form-control mb-2" x-model="filterType" @change="onSelectChange('Group Type', $event.target.value)">
-        <template x-for="type in typeOptions" :key="type">
-          <option :value="type" x-text="type"></option>
-        </template>
-      </select>
+      <input type="search" x-model.trim="search" placeholder="Search" aria-label="Search" class="form-control mb-2 mr-sm-2">
     </div>
 
     <div class="col-auto">
